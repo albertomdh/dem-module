@@ -12,7 +12,7 @@ import json
 
 class ProductStockPriceConnector(http.Controller):
 
-    @http.route(["/create_sale_order_connector"], type='json', auth="user", methods=['POST'])
+    @http.route(["/create_sale_order_connector"], type='json', auth="none", methods=['POST'])
     def synchronise_odoo(self, **post):
         _logger.info("Post request received")
         _logger.info("Creating sale order...")
