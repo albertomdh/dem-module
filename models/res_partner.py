@@ -17,7 +17,7 @@ class ResPartnerInheritProductStockConnector(models.Model):
                                              line.zip, line.country_id.name)
             partner_name = line.name
             partner_vat = line.vat
-            partner_phone = line.mobile
+            partner_phone = line.phone
             partner_email = line.email
             client_number = line.ncliente
 

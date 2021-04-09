@@ -80,10 +80,18 @@ class ProductStockPriceConnector(http.Controller):
                     _logger.info("No dummy dist found, aborting the request ...")
                     return
 
-            # get the sale lines
+            # creating disscount
             order_lines = data.get('line_items')
+
+            subtotal_without_taxes_shopify = float(data.get('subtotal_price')) - float(data.get('total_tax'));
+            discount = self.get_discount_order_line_data(order_lines, subtotal_without_taxes_shopify);
+
+            if discount < 15:
+                discount = 15
+
+            # get the sale lines
             if order_lines:
-                order_line = self.get_sale_order_line_data(order_lines)
+                order_line = self.get_sale_order_line_data(order_lines, discount)
             else:
                 order_line = []
 
@@ -106,7 +114,7 @@ class ProductStockPriceConnector(http.Controller):
                     'partner_invoice_id': partner.id,
                     'partner_shipping_id': customer.id,
                     'order_line': order_line,
-                    'portal': 'Shopify Dem' + data.get('name'),
+                    'portal': 'DEM ' + data.get('name'),
                     'x_studio_metodo_de_pago': data.get('gateway'),
                     'x_studio_metodo_de_envio_shopify': shipping_title,
                     'x_studio_comentarios': shopify_note,
@@ -125,10 +133,26 @@ class ProductStockPriceConnector(http.Controller):
         except Exception as e:
             _logger.info("Error occurred while executing the logic %s" % e)
 
-    def get_sale_order_line_data(self, order_line_data):
+    def get_sale_order_line_data(self, order_line_data, discount):
         res = []
         for line in order_line_data:
             product_id = request.env['product.product'].sudo().search([('default_code', '=', line['sku'])], limit=1)
             if product_id:
-                res.append((0, 0, {'product_id': product_id.id, 'product_uom_qty': line.get('quantity'), 'discount': 15}))
+                res.append((0, 0, {'product_id': product_id.id, 'product_uom_qty': line.get('quantity'), 'discount': discount}))
         return res
+
+    def get_discount_order_line_data(self, order_line_data, shopify_total):
+        total_tax_not_included = float(0)
+        discount = float(0)
+        for line in order_line_data:
+            product_odoo = request.env['product.product'].sudo().search([('default_code', '=', line['sku'])], limit=1)
+            if product_odoo:
+                total_tax_not_included += float(product_odoo.list_price) * int(line.get('quantity'))
+        
+        _logger.info("Shopify Total: %f" % shopify_total)
+        _logger.info("Odoo Estimate: %f" % total_tax_not_included)
+
+        if shopify_total < total_tax_not_included:
+            discount = (1 - (shopify_total / total_tax_not_included )) * 100
+            _logger.info("A discount it must be in the line order. Discount: %f" % discount)
+        return discount
