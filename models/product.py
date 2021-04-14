@@ -1,4 +1,4 @@
-from odoo import models, fields, exceptions, _
+from odoo import models, fields, exceptions, api, _
 import requests
 import json
 import logging
@@ -9,6 +9,15 @@ _logger = logging.getLogger(__name__)
 class ProductInheritProductStockPriceConnector(models.Model):
     _inherit = 'product.template'
 
+     def get_product_parent_tags(self):
+        res_categ = []
+        for categs in self.public_categ_ids:
+            res_categ.append(categs.display_name.split('/'))
+        if res_categ:
+            if len(res_categ) <= 1:
+                res_categ = res_categ[0]
+        return res_categ
+    
     def send_product_template_info(self):
         headers = {'Content-Type': 'application/json'}
         for line in self:
@@ -69,17 +78,7 @@ class ProductInheritProductStockPriceConnector(models.Model):
                                   headers=headers)
                 except Exception as e:
                     _logger.error("Failed to send post request to webservice, reason : %s" % e)
-                 
-    def get_product_parent_tags(self):
-        res_categ = []
-        for categs in self.public_categ_ids:
-            res_categ.append(categs.display_name.split('/'))
-        if res_categ:
-            if len(res_categ) <= 1:
-                res_categ = res_categ[0]
-
-        return res_categ
-    
+                  
 # class ProductProductStockPriceConnector(models.Model):
 #     _inherit = 'product.product'
 #
