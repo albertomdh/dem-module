@@ -11,7 +11,6 @@ class ProductInheritProductStockPriceConnector(models.Model):
 
     def send_product_template_info(self):
         headers = {'Content-Type': 'application/json'}
-
         for line in self:
             variants = line.product_variant_ids
             product_images = []
@@ -47,7 +46,6 @@ class ProductInheritProductStockPriceConnector(models.Model):
             except Exception as e:
                 raise exceptions.ValidationError(_("Failed to send post request for the product %s, reason : %s" % (
                     line.name, e)))
-
                 
     def write(self, vals):
         print(vals)
@@ -55,8 +53,7 @@ class ProductInheritProductStockPriceConnector(models.Model):
         if vals.get('list_price'):
             self.send_new_price_data_product_connector_webserver()
         return res
-
-    
+ 
     def send_new_price_data_product_connector_webserver(self):
         for line in self:
             variants = line.product_variant_ids
@@ -72,9 +69,7 @@ class ProductInheritProductStockPriceConnector(models.Model):
                                   headers=headers)
                 except Exception as e:
                     _logger.error("Failed to send post request to webservice, reason : %s" % e)
-
-                    
-                    
+                 
     def get_product_parent_tags(self):
         res_categ = []
         for categs in self.public_categ_ids:
