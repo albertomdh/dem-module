@@ -33,7 +33,7 @@ class ProductInheritProductStockPriceConnector(models.Model):
                     'stock':variant.qty_available_not_res,
                     'barcode': variant.barcode,
                     'taxable': bool(variant.taxes_id),
-                    'shopify_variant_id': variant.shopify_variant_id
+                    'shopify_variant_id': variant.shopify_variant_id,
                     'variant_info':[{variant_attribute.attribute_id.display_name: variant_attribute.name} for
                                      variant_attribute in
                                      variant.attribute_value_ids]
