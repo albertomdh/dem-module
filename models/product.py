@@ -25,12 +25,19 @@ class ProductInheritProductStockPriceConnector(models.Model):
                 variant_data.append({'sku': variant.default_code, 'sales_price': variant.list_price, 'stock':variant.qty_available_not_res, 'variant_info':variant_info_array})
                 if variant.image_medium:
                     product_images.append(variant.image_medium.decode('utf-8'))
+            res_categ = []
+            for categs in self.public_categ_ids:
+                res_categ.append(categs.display_name.split('/'))
+            if res_categ:
+                if len(res_categ) <= 1:
+                    res_categ = res_categ[0]
             data = {
                 "name": line.name,
                 "image": product_images,
                 "description": line.website_description,
                 "vendor": line.marca_ids.mapped('display_name'),
-                "variants": variant_data
+                "variants": variant_data,
+                "tags":res_categ
             }
             data_json = json.dumps({'params': data})
             try:
