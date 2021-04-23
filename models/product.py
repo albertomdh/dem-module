@@ -11,20 +11,19 @@ class ProductInheritProductStockPriceConnector(models.Model):
 
     def send_product_template_info(self):
         headers = {'Content-Type': 'application/json'}
-
         for line in self:
             variants = line.product_variant_ids
             product_images = []
             variant_data = []
-            #if line.image:
-            #    product_images.append(line.image.decode('utf-8'))
-            for image_data in line.product_image_ids:
-                product_images.append(image_data.image.decode('utf-8') )
+            if line.image:
+                product_images.append(line.image.decode('utf-8'))
+            #for image_data in line.product_image_ids:
+            #    product_images.append(image_data.image.decode('utf-8') )
             for variant in variants:
                 variant_info_array=[]
                 for variant_attribute in variant.attribute_value_ids:
                     variant_info_array.append({variant_attribute.attribute_id.display_name: variant_attribute.name})
-                variant_data.append({'sku': variant.default_code, 'sales_price': variant.list_price, 'stock':variant.qty_available_not_res, 'variant_info':variant_info_array})
+                variant_data.append({'sku': variant.default_code, 'sales_price': variant.list_price, 'stock':variant.qty_available_not_res, 'variant_info':variant_info_array, 'barcode':variant.barcode})
             res_categ = []
             for categs in self.public_categ_ids:
                 res_categ.append(categs.display_name.split('/'))
