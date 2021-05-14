@@ -15,10 +15,11 @@ class ProductInheritProductStockPriceConnector(models.Model):
             variants = line.product_variant_ids
             product_images = []
             variant_data = []
+            additional_images = []
             if line.image:
                 product_images.append(line.image.decode('utf-8'))
-            #for image_data in line.product_image_ids:
-            #    product_images.append(image_data.image.decode('utf-8') )
+            for image_data in line.product_image_ids:
+                additional_images.append(image_data.image.decode('utf-8') )
             for variant in variants:
                 variant_info_array=[]
                 for variant_attribute in variant.attribute_value_ids:
@@ -33,6 +34,7 @@ class ProductInheritProductStockPriceConnector(models.Model):
             data = {
                 "name": line.name,
                 "image": product_images,
+                "extra_imgs":additional_images,
                 "description": line.website_description,
                 "vendor": line.marca_ids.mapped('display_name'),
                 "variants": variant_data,
