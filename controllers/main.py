@@ -138,7 +138,10 @@ class ProductStockPriceConnector(http.Controller):
         for line in order_line_data:
             product_id = request.env['product.product'].sudo().search([('default_code', '=', line['sku'])], limit=1)
             if product_id:
-                res.append((0, 0, {'product_id': product_id.id, 'product_uom_qty': line.get('quantity'), 'discount': discount}))
+                product_dis=(1 - (line.get('price') / product_id.list_price )) * 100
+                if product_dis < 15:
+                    product_dis=15
+                res.append((0, 0, {'product_id': product_id.id, 'product_uom_qty': line.get('quantity'), 'discount': product_dis}))
         return res
 
     def get_discount_order_line_data(self, order_line_data, shopify_total):

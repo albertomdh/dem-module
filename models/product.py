@@ -19,7 +19,7 @@ class ProductInheritProductStockPriceConnector(models.Model):
             if line.image:
                 product_images.append(line.image.decode('utf-8'))
             for image_data in line.product_image_ids:
-                additional_images.append(image_data.image.decode('utf-8') )
+                additional_images.append(image_data.image.decode('utf-8'))
             for variant in variants:
                 variant_info_array=[]
                 for variant_attribute in variant.attribute_value_ids:
