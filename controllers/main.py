@@ -91,6 +91,7 @@ class ProductStockPriceConnector(http.Controller):
 
             # get the sale lines
             if order_lines:
+                _logger.info("DEM: Hay order_lines")
                 order_line = self.get_sale_order_line_data(order_lines, discount)
             else:
                 order_line = []
@@ -136,11 +137,14 @@ class ProductStockPriceConnector(http.Controller):
     def get_sale_order_line_data(self, order_line_data, discount):
         res = []
         for line in order_line_data:
+            product_dis = 0
             product_id = request.env['product.product'].sudo().search([('default_code', '=', line['sku'])], limit=1)
+            
             if product_id:
-                product_dis=(1 - (line.get('price') / product_id.list_price )) * 100
+                product_dis = ( 1 - ( float(line.get('price')) / float(product_id.list_price) ) )  * 100            
                 if product_dis < 15:
-                    product_dis=15
+                    product_dis = 15
+                _logger.info("DEM: Appending product to order")
                 res.append((0, 0, {'product_id': product_id.id, 'product_uom_qty': line.get('quantity'), 'discount': product_dis}))
         return res
 

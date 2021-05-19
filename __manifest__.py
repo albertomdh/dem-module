@@ -1,6 +1,6 @@
 {
     'name': 'Product stock/price connector',
-    'version': '4.0',
+    'version': '18.5',
     'summary': 'send the new quantites and new prices of the product and recieve sale orders from'
                'a web service',
     'description': 'This module will send a post request to a web service that has its url defined in the '
