@@ -14,7 +14,7 @@ class StockMoveLineInheritProductStockPriceConnector(models.Model):
     def send_new_stock_data_product_connector_webserver(self):
         for line in self:
             data = {'sku': line.product_id.default_code,
-                    'new_stock': line.product_id.qty_available,
+                    'new_stock': line.product_id.qty_available_not_res,
                     'new_price': line.product_id.list_price}
             headers = {'Content-Type': 'application/json'}
             print(data)

@@ -60,7 +60,7 @@ class ProductInheritProductStockPriceConnector(models.Model):
             variants = line.product_variant_ids
             for variant in variants:
                 data = {'sku': variant.default_code,
-                        'new_stock': variant.qty_available,
+                        'new_stock': variant.qty_available_not_res,
                         'new_price': variant.list_price}
                 print(data)
                 headers = {'Content-Type': 'application/json'}
