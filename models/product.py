@@ -26,7 +26,7 @@ class ProductInheritProductStockPriceConnector(models.Model):
                     variant_info_array.append({variant_attribute.attribute_id.display_name: variant_attribute.name})
                 variant_data.append({'sku': variant.default_code, 'sales_price': variant.list_price, 'stock':variant.qty_available_not_res, 'variant_info':variant_info_array, 'barcode':variant.barcode})
             res_categ = []
-            for categs in self.public_categ_ids:
+            for categs in line.public_categ_ids:
                 res_categ.append(categs.display_name.split('/'))
             if res_categ:
                 if len(res_categ) <= 1:
